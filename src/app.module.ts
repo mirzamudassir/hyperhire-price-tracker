@@ -3,6 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PricesModule } from './api/prices/prices.module';
+import { MoralisModule } from './core/services/moralis/moralis.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { AlertsModule } from './api/alerts/alerts.module';
 
 @Module({
   imports: [
@@ -10,6 +14,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -31,7 +36,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         },
       }),
     }),
-    // PriceModule,
+    PricesModule,
+    MoralisModule,
+    AlertsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

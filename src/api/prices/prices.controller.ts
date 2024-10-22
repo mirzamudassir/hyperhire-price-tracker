@@ -1,34 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { PricesService } from './prices.service';
-import { CreatePriceDto } from './dto/create-price.dto';
-import { UpdatePriceDto } from './dto/update-price.dto';
-
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+@ApiTags('Prices')
 @Controller('prices')
 export class PricesController {
   constructor(private readonly pricesService: PricesService) {}
 
-  @Post()
-  create(@Body() createPriceDto: CreatePriceDto) {
-    return this.pricesService.create(createPriceDto);
+  @Get('hourly')
+  @ApiOperation({ summary: 'Get hourly price of each hour' })
+  async getHourlyPrices() {
+    return await this.pricesService.getHourlyPrices('ethereum');
   }
 
-  @Get()
-  findAll() {
-    return this.pricesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pricesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePriceDto: UpdatePriceDto) {
-    return this.pricesService.update(+id, updatePriceDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pricesService.remove(+id);
+  @Get('swap/:amount')
+  @ApiOperation({ summary: 'Get swap rate ETH to BTC' })
+  async getSwapPrice(@Param('amount') amount: number) {
+    return await this.pricesService.getSwapRate(amount);
   }
 }
